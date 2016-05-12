@@ -3,5 +3,5 @@
 
 namespace atl
 {
-    class stage;
+    struct stage;
 }

@@ -6,7 +6,7 @@
 
 namespace atl
 {
-    class stage
+    struct stage
     {
     private:
         atl::size2f mDimensions;
