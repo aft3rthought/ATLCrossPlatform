@@ -20,6 +20,7 @@ namespace atl
         number_8,
         number_9,
 
+        key_space,
         key_tab,
         key_esc,
 
