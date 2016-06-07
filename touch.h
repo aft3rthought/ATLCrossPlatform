@@ -195,16 +195,17 @@ namespace atl
                 if(!in_current_components.has(id) && !lost_components.has(id))
                     lost_components.add(id);
             }
-
+            
             // for everything in new & current, add to steady
+            auto l_previously_steady = steady_components;
             steady_components.reset();
-            for(const auto & id : new_components)
+            for(const auto & id : in_current_components)
             {
-                if(in_current_components.has(id))
+                if(new_components.has(id) || l_previously_steady.has(id))
                     steady_components.add(id);
             }
 
-            // for everything no in steady (after an update) but in current, add to new
+            // for everything not in steady (after an update) but in current, add to new
             new_components.reset();
             for(const auto & id : in_current_components)
             {
