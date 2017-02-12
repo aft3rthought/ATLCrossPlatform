@@ -61,12 +61,10 @@ namespace atl
         letter_z,
     };
 
-    enum class key_event_modifier : int
-    {
-        shift = 1,
-        ctrl = 2,
-        alt = 4
-    };
+    const static int key_event_mask_key_down = 0b0001;
+    const static int key_event_mask_shift    = 0b0010;
+    const static int key_event_mask_ctrl     = 0b0100;
+    const static int key_event_mask_alt      = 0b1000;
 
     inline bool key_event_code_is_number(key_event_code code)
     {
@@ -129,10 +127,16 @@ namespace atl
     struct key_event
     {
         key_event_code code;
-        key_event_modifier modifiers_mask;
+        int modifiers_mask;
 
+        key_event()
+        :
+        code(key_event_code::unrecognized),
+        modifiers_mask(0)
+        {}
+        
         key_event(key_event_code in_code,
-                  key_event_modifier in_modifiers_mask)
+                  int in_modifiers_mask)
         :
         code(in_code),
         modifiers_mask(in_modifiers_mask)
