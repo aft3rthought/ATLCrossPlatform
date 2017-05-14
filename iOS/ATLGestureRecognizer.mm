@@ -15,6 +15,23 @@
 #include "ATLCrossPlatform/touch_handlers.h"
 #include <vector>
 
+namespace atl
+{
+    struct touch
+    {
+        unsigned int mTouchId;
+        atl::point2f mPosition;
+        bool mIsLive;
+        
+        touch(unsigned int in_mTouchId, const atl::point2f & in_mPosition)
+        :
+        mTouchId(in_mTouchId),
+        mPosition(in_mPosition),
+        mIsLive(true)
+        {}
+    };
+}
+
 @interface ATLGestureRecognizer ()
 
 @property atl::touch_handlers *handlers;
