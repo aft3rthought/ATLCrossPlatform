@@ -62,11 +62,13 @@ namespace atl
         letter_z,
     };
 
-    const static int key_event_mask_key_down = 0b0001;
-    const static int key_event_mask_shift    = 0b0010;
-    const static int key_event_mask_ctrl     = 0b0100;
-    const static int key_event_mask_alt      = 0b1000;
-
+    const static unsigned key_event_mask_key_down = 1;
+	const static unsigned key_event_mask_key_up   = 2;
+	const static unsigned key_event_mask_repeat   = 4;
+	const static unsigned key_event_mask_shift    = 8;
+    const static unsigned key_event_mask_ctrl     = 16;
+    const static unsigned key_event_mask_alt      = 32;
+	
     inline bool key_event_code_is_number(key_event_code code)
     {
         switch(code)
@@ -128,7 +130,7 @@ namespace atl
     struct key_event
     {
         key_event_code code;
-        int modifiers_mask;
+        unsigned modifiers_mask;
 
         key_event()
         :
@@ -137,7 +139,7 @@ namespace atl
         {}
         
         key_event(key_event_code in_code,
-                  int in_modifiers_mask)
+                  unsigned in_modifiers_mask)
         :
         code(in_code),
         modifiers_mask(in_modifiers_mask)
