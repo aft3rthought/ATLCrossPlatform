@@ -1,4 +1,5 @@
 
+#include "ATLUtil/numeric_casts.h"
 #include "ATLCrossPlatform/file_system.h"
 
 #ifdef PLATFORM_WINDOWS
@@ -104,7 +105,7 @@ namespace atl
 		if(storage_file == nullptr || file_stream_buffer == nullptr)
 			return {file_loader_read_result_status::need_to_call_prepare, 0};
 
-		if(in_output_buffer.size() < file_stream_buffer->Length)
+		if(atl::safe_comparator(in_output_buffer.size()) < atl::safe_comparator(file_stream_buffer->Length))
 			return {file_loader_read_result_status::error_insufficient_buffer_size, file_stream_buffer->Length};
 
 		auto data_reader = Windows::Storage::Streams::DataReader::FromBuffer(file_stream_buffer);
