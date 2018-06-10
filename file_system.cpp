@@ -21,7 +21,7 @@ namespace atl
 #endif
 	}
 
-	file_loader_prepare_result file_loader_type::prepare(const atl::region<const char> & in_file_path)
+	file_loader_prepare_result file_loader_type::prepare(const atl::region_type<const char> & in_file_path)
 	{
 #if defined(atlpcconfig_platform_mac_osx) || defined(atlpcconfig_platform_ios)
 		std::ifstream file(in_application_folder.rootDirectory() + "/" + in_file_path, std::ios::in);
@@ -93,7 +93,7 @@ namespace atl
 #endif
 	}
 
-	file_loader_read_result file_loader_type::read(const atl::region<unsigned char> & in_output_buffer)
+	file_loader_read_result file_loader_type::read(const atl::region_type<unsigned char> & in_output_buffer)
 	{
 		if(error_flag)
 			return {file_loader_read_result_status::error_could_not_load_file, 0};

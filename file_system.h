@@ -43,8 +43,8 @@ namespace atl
 
     struct file_loader_type
     {
-		file_loader_prepare_result prepare(const atl::region<const char> & in_file_path);
-		file_loader_read_result read(const atl::region<unsigned char> & in_output_buffer);
+		file_loader_prepare_result prepare(const atl::region_type<const char> & in_file_path);
+		file_loader_read_result read(const atl::region_type<unsigned char> & in_output_buffer);
 		void free();
 
 #ifdef PLATFORM_WINDOWS
