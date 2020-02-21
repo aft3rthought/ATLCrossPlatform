@@ -87,12 +87,21 @@ namespace atlxp
 		constexpr unsigned key_space = 6000;
 		constexpr unsigned key_tab = 6001;
 		constexpr unsigned key_esc = 6002;
-		constexpr unsigned key_grave = 6003;
-		constexpr unsigned key_unrecognized = 6004;
+		constexpr unsigned key_comma = 6003;
+		constexpr unsigned key_period = 6004;
+		constexpr unsigned key_grave = 6005;
+		constexpr unsigned key_semicolon = 6006;
+		constexpr unsigned key_single_quote = 6007;
+		constexpr unsigned key_left_bracket = 6008;
+		constexpr unsigned key_right_bracket = 6009;
 
-		constexpr unsigned modifier_shift = 7000;
-		constexpr unsigned modifier_ctrl = 7001;
-		constexpr unsigned modifier_alt = 7002;
+		constexpr unsigned modifier_left_shift = 7000;
+		constexpr unsigned modifier_right_shift = 7001;
+		constexpr unsigned modifier_shift = 7002;
+		constexpr unsigned modifier_left_control = 7003;
+		constexpr unsigned modifier_right_control = 7004;
+		constexpr unsigned modifier_control = 7005;
+		constexpr unsigned modifier_alt = 7006;
 
 		constexpr unsigned arrow_up = 8000;
 		constexpr unsigned arrow_right = 8001;
@@ -125,5 +134,18 @@ namespace atlxp
 		constexpr unsigned letter_x = 9023;
 		constexpr unsigned letter_y = 9024;
 		constexpr unsigned letter_z = 9025;
+
+		constexpr unsigned function_key_f1 = 10000;
+		constexpr unsigned function_key_f2 = 10001;
+		constexpr unsigned function_key_f3 = 10002;
+		constexpr unsigned function_key_f4 = 10003;
+		constexpr unsigned function_key_f5 = 10004;
+		constexpr unsigned function_key_f6 = 10005;
+		constexpr unsigned function_key_f7 = 10006;
+		constexpr unsigned function_key_f8 = 10007;
+		constexpr unsigned function_key_f9 = 10008;
+		constexpr unsigned function_key_f10 = 10009;
+		constexpr unsigned function_key_f11 = 10010;
+		constexpr unsigned function_key_f12 = 10011;
 	}
 }
