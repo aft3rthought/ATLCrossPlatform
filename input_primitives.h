@@ -59,6 +59,8 @@ namespace atlxp
 		constexpr unsigned button_left = 1;
 		constexpr unsigned button_middle = 2;
 		constexpr unsigned button_right = 3;
+		constexpr unsigned wheel_up = 4;
+		constexpr unsigned wheel_down = 5;
 	}
 
 	namespace keyboard_switch_events
@@ -94,6 +96,9 @@ namespace atlxp
 		constexpr unsigned key_single_quote = 6007;
 		constexpr unsigned key_left_bracket = 6008;
 		constexpr unsigned key_right_bracket = 6009;
+		constexpr unsigned key_minus_sign = 6010;
+		constexpr unsigned key_equals_sign = 6011;
+		constexpr unsigned key_backspace = 6012;
 
 		constexpr unsigned modifier_left_shift = 7000;
 		constexpr unsigned modifier_right_shift = 7001;
