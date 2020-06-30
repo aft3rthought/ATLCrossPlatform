@@ -54,4 +54,29 @@ namespace atl
 		Windows::Storage::Streams::IBuffer ^ file_stream_buffer = nullptr;
 #endif
     };
+
+	enum class file_write_begin_result_type
+	{
+		already_writing,
+		failed_to_start_writing,
+		began_writing,
+	};
+
+	enum class file_write_await_result_type
+	{
+		busy_writing,
+		not_writing,
+	};
+
+	struct file_writer_type
+	{
+		file_write_begin_result_type write(const atl::region_type<unsigned char>& in_output_buffer);
+		file_write_await_result_type await();
+
+#ifdef PLATFORM_WINDOWS
+		std::atomic_bool busy_flag = false;
+		std::atomic_bool error_flag = false;
+		Windows::Storage::StorageFile^ storage_file = nullptr;
+#endif
+	};
 }

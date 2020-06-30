@@ -1,6 +1,7 @@
 
 #include "ATLUtil/numeric_casts.h"
 #include "ATLCrossPlatform/file_system.h"
+#include <collection.h>
 
 #ifdef PLATFORM_WINDOWS
 #define atlpcconfig_platform_win_uwp
@@ -109,6 +110,9 @@ namespace atl
 			return {file_loader_read_result_status::error_insufficient_buffer_size, file_stream_buffer->Length};
 
 		auto data_reader = Windows::Storage::Streams::DataReader::FromBuffer(file_stream_buffer);
+#pragma message("TODO: Consider setting these flags")
+		//dataWriter.UnicodeEncoding(Windows::Storage::Streams::UnicodeEncoding::Utf16LE);
+		//dataWriter.ByteOrder(Windows::Storage::Streams::ByteOrder::LittleEndian);
 		try
 		{
 			data_reader->ReadBytes(::Platform::ArrayReference<unsigned char>(in_output_buffer.begin(), file_stream_buffer->Length));
@@ -122,4 +126,48 @@ namespace atl
 		return {file_loader_read_result_status::wrote_to_buffer, file_stream_buffer->Length};
 	}
 
+	file_write_begin_result_type file_writer_type::write(const atl::region_type<unsigned char>& bytes_to_write)
+	{
+		if(busy_flag) return file_write_begin_result_type::already_writing;
+		busy_flag = true;
+		error_flag = false;
+
+		auto write_data = [this, bytes_to_write]()
+		{
+			if(storage_file != nullptr)
+			{
+				Windows::Storage::FileIO::WriteBytesAsync(storage_file, ::Platform::ArrayReference<unsigned char>(bytes_to_write.begin(), bytes_to_write.size()));
+				busy_flag = false;
+			}
+			else
+			{
+				error_flag = true;
+				busy_flag = false;
+			}
+		};
+
+		if(storage_file != nullptr)
+		{
+			Concurrency::create_task(write_data);
+		}
+		else
+		{
+			auto file_save_picker = ref new ::Windows::Storage::Pickers::FileSavePicker;
+			file_save_picker->SuggestedStartLocation = ::Windows::Storage::Pickers::PickerLocationId::DocumentsLibrary;
+			file_save_picker->SuggestedFileName = L"document";
+			auto extensions = ref new ::Platform::Collections::Vector<::Platform::String^>();
+			extensions->Append(".data");
+			file_save_picker->FileTypeChoices->Insert(L"Data", extensions);
+			Concurrency::create_task(file_save_picker->PickSaveFileAsync())
+				.then([this](::Windows::Storage::StorageFile^ created_file) { storage_file = created_file; })
+				.then(write_data);
+		}
+		return file_write_begin_result_type::began_writing;
+	}
+
+	file_write_await_result_type file_writer_type::await()
+	{
+		if(busy_flag) return file_write_await_result_type::busy_writing;
+		return file_write_await_result_type::not_writing;
+	}
 }
