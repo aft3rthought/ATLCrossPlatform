@@ -57,7 +57,7 @@ namespace atl
 			busy_flag = true;
 			auto storage_folder = Windows::ApplicationModel::Package::Current->InstalledLocation;
 			char16 wide_string_buffer[4098];
-			auto wide_string_length = MultiByteToWideChar(CP_UTF8, 0, in_file_path.begin(), in_file_path.size(), wide_string_buffer, 4096);
+			auto wide_string_length = MultiByteToWideChar(UINT{CP_UTF8}, DWORD{0}, in_file_path.begin(), atl::default_ptrdiff_to_int(in_file_path.size()), wide_string_buffer, 4096);
 			wide_string_buffer[wide_string_length] = 0;
 			wide_string_buffer[wide_string_length + 1] = 0;
 
@@ -136,7 +136,7 @@ namespace atl
 		{
 			if(storage_file != nullptr)
 			{
-				Windows::Storage::FileIO::WriteBytesAsync(storage_file, ::Platform::ArrayReference<unsigned char>(bytes_to_write.begin(), bytes_to_write.size()));
+				Windows::Storage::FileIO::WriteBytesAsync(storage_file, ::Platform::ArrayReference<unsigned char>(bytes_to_write.begin(), atl::default_ptrdiff_to_int(bytes_to_write.size())));
 				busy_flag = false;
 			}
 			else
