@@ -36,7 +36,9 @@ struct acquire_image_from_clipboard_request_type
 	std::atomic_bool loading_flag = false;
 	std::atomic_bool done_flag = false;
 	std::atomic<acquire_image_from_clipboard_windows_API_error_type> api_error = acquire_image_from_clipboard_windows_API_error_type::none;
-	atl::region_type<unsigned char> buffer = {nullptr, nullptr};
+	atl::region_type<unsigned char> backing_buffer = {nullptr, nullptr};
+	unsigned int image_width = 0;
+	unsigned int image_height = 0;
 
 	acquire_image_from_clipboard_status_type acquire_image_from_clipboard();
 #endif
