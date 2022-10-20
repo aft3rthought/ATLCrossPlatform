@@ -21,10 +21,10 @@ acquire_image_from_clipboard_status_type acquire_image_from_clipboard_request_ty
 	done_flag = false;
 
 	// Get the bitmap and display it.
-	auto dataPackageView = Windows::ApplicationModel::DataTransfer::Clipboard::GetContent();
-	if(dataPackageView->Contains(Windows::ApplicationModel::DataTransfer::StandardDataFormats::Bitmap))
+	auto data_package_view = Windows::ApplicationModel::DataTransfer::Clipboard::GetContent();
+	if(data_package_view->Contains(Windows::ApplicationModel::DataTransfer::StandardDataFormats::Bitmap))
 	{
-		auto read_clipboard_task = Concurrency::create_task(dataPackageView->GetBitmapAsync());
+		auto read_clipboard_task = Concurrency::create_task(data_package_view->GetBitmapAsync());
 		read_clipboard_task.then([this](Windows::Storage::Streams::IRandomAccessStreamReference^ clipboard_contents)
 		{
 			if(clipboard_contents != nullptr)
@@ -35,14 +35,6 @@ acquire_image_from_clipboard_status_type acquire_image_from_clipboard_request_ty
 					auto bitmap_set_source_task = Concurrency::create_task(Windows::Graphics::Imaging::BitmapDecoder::CreateAsync(clipboard_buffer));
 					bitmap_set_source_task.then([this](Windows::Graphics::Imaging::BitmapDecoder^ decoder)
 					{
-						if(decoder->BitmapPixelFormat != Windows::Graphics::Imaging::BitmapPixelFormat::Rgba8 || decoder->BitmapAlphaMode != Windows::Graphics::Imaging::BitmapAlphaMode::Straight)
-						{
-							api_error = acquire_image_from_clipboard_windows_API_error_type::error_retrieving_bitmap;
-							done_flag = true;
-							loading_flag = false;
-						}
-						else
-						{
 							const auto clipboard_image_pixel_width = decoder->PixelWidth;
 							const auto clipboard_image_pixel_height = decoder->PixelHeight;
 							const auto bytes_needed = clipboard_image_pixel_width * clipboard_image_pixel_height * 4;
@@ -56,14 +48,30 @@ acquire_image_from_clipboard_status_type acquire_image_from_clipboard_request_ty
 							{
 								image_width = clipboard_image_pixel_width;
 								image_height = clipboard_image_pixel_height;
-								auto decoder_task = Concurrency::create_task(decoder->GetPixelDataAsync());
+								Windows::Graphics::Imaging::BitmapTransform^ identity_bitmap_transform = ref new Windows::Graphics::Imaging::BitmapTransform;
+								auto decoder_task = Concurrency::create_task(decoder->GetPixelDataAsync(Windows::Graphics::Imaging::BitmapPixelFormat::Rgba8,
+																			 Windows::Graphics::Imaging::BitmapAlphaMode::Straight,
+																			 identity_bitmap_transform,
+																			 Windows::Graphics::Imaging::ExifOrientationMode::RespectExifOrientation,
+																			 Windows::Graphics::Imaging::ColorManagementMode::DoNotColorManage));
 								decoder_task.then([this](Windows::Graphics::Imaging::PixelDataProvider^ pixel_data_provider)
 								{
-									Platform::Array<unsigned char>^ bitmap_bytes = pixel_data_provider->DetachPixelData();
-									std::copy(bitmap_bytes->begin(), bitmap_bytes->end(), backing_buffer.begin());
+									if(pixel_data_provider)
+									{
+										Platform::Array<unsigned char>^ bitmap_bytes = pixel_data_provider->DetachPixelData();
+										std::copy(bitmap_bytes->begin(), bitmap_bytes->end(), backing_buffer.begin());
+										api_error = acquire_image_from_clipboard_windows_API_error_type::none;
+										done_flag = true;
+										loading_flag = false;
+									}
+									else
+									{
+										api_error = acquire_image_from_clipboard_windows_API_error_type::error_retrieving_bitmap;
+										done_flag = true;
+										loading_flag = false;
+									}
 								});
 							}
-						}
 					});
 				});
 			}
@@ -75,6 +83,7 @@ acquire_image_from_clipboard_status_type acquire_image_from_clipboard_request_ty
 			}
 		});
 	}
+	loading_flag = false;
 	return acquire_image_from_clipboard_status_type::no_bitmap_on_clipboard;
 }
 #endif
